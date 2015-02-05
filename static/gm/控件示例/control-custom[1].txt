@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:v="urn:schemas-microsoft-com:vml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>Google 地图 JavaScript API 示例: 定制控件</title>
+    <script src="http://ditu.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA&hl=zh-CN" 
+      type="text/javascript"></script>
+    <script type="text/javascript">
+    // TextualZoomControl 是一种 GControl 控件，可以显示文本＂放大＂和＂缩小＂按钮。
+    // （取代Google 地图上对应的图标按钮）
+
+    function TextualZoomControl() {
+    }
+    TextualZoomControl.prototype = new GControl();
+
+    // 为每个按钮创建一个 DIV，并将其放在容器 DIV 中，
+    // 然后返回容器 DIV 作为我们的控件元素。将该控件添加到
+    // 地图容器中，并将其返回，以便地图类能正确地放置它。
+    TextualZoomControl.prototype.initialize = function(map) {
+      var container = document.createElement("div");
+
+      var zoomInDiv = document.createElement("div");
+      this.setButtonStyle_(zoomInDiv);
+      container.appendChild(zoomInDiv);
+      zoomInDiv.appendChild(document.createTextNode("放大"));
+      GEvent.addDomListener(zoomInDiv, "click", function() {
+        map.zoomIn();
+      });
+
+      var zoomOutDiv = document.createElement("div");
+      this.setButtonStyle_(zoomOutDiv);
+      container.appendChild(zoomOutDiv);
+      zoomOutDiv.appendChild(document.createTextNode("缩小"));
+      GEvent.addDomListener(zoomOutDiv, "click", function() {
+        map.zoomOut();
+      });
+
+      map.getContainer().appendChild(container);
+      return container;
+    }
+
+    // 默认情况下，该控件将在地图的左上角显示，边距为 7 像素。
+    TextualZoomControl.prototype.getDefaultPosition = function() {
+      return new GControlPosition(G_ANCHOR_TOP_LEFT, new GSize(7, 7));
+    }
+
+    // 设置给定按钮元素的正确 CSS。
+    TextualZoomControl.prototype.setButtonStyle_ = function(button) {
+      button.style.textDecoration = "underline";
+      button.style.color = "#0000cc";
+      button.style.backgroundColor = "white";
+      button.style.font = "small Arial";
+      button.style.border = "1px solid black";
+      button.style.padding = "2px";
+      button.style.marginBottom = "3px";
+      button.style.textAlign = "center";
+      button.style.width = "6em";
+      button.style.cursor = "pointer";
+    }
+
+    function initialize() {
+      if (GBrowserIsCompatible()) {
+        var map = new GMap2(document.getElementById("map_canvas"));
+        map.setCenter(new GLatLng(39.917,116.397), 14);
+        map.addControl(new TextualZoomControl());
+      }
+    }
+
+    </script>
+  </head>
+  <body onload="initialize()" onunload="GUnload()">
+    <div id="map_canvas" style="width: 500px; height: 300px"></div>
+  </body>
+</html>

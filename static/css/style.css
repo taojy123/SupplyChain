@@ -1,0 +1,113 @@
+/*通常時*/
+
+body {
+	padding-top:60px;
+}
+
+.full-width {
+	-moz-box-sizing: border-box!important;
+	-webkit-box-sizing: border-box!important;
+	-ms-box-sizing: border-box!important;
+	box-sizing: border-box!important;
+	width: 100%!important;
+	height: 30px!important;
+}
+
+.fluid-table {
+	width:100%;
+}
+table input,
+table select {
+	margin:0!important;
+}
+table th,
+table td {
+	padding:3px 2px;
+}
+.mb10 {
+	margin-bottom:10px;
+}
+.mb20 {
+	margin-bottom:20px;
+}
+.mb30 {
+	margin-bottom:30px;
+}
+
+/*ブラウザの横幅が980px以下のとき*/
+@media (max-width: 980px) {
+	.sidebar-nav-fixed {
+		top:70px;
+	}
+	/* Remove any padding from the body */
+	body {
+		padding-top: 0;
+	}      
+	table input,
+	table select {
+		margin:0!important;
+	}
+	table th,
+	table td {
+		padding:3px 2px;
+	}
+}
+
+@media (max-width: 767px) {
+
+/* Force table to not be like tables anymore */
+.fluid-table table,
+.fluid-table table, 
+.fluid-table thead, 
+.fluid-table tbody, 
+.fluid-table th, 
+.fluid-table td, 
+.fluid-table tr { 
+	display: block; 
+}
+
+/* Hide table headers (but not display: none;, for accessibility) */
+.fluid-table thead tr { 
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+}
+
+.fluid-table tr { border: 1px solid #ccc; }
+
+.fluid-table td { 
+	/* Behave  like a "row" */
+	border: none;
+	position: relative;
+	border-bottom:1px solid #efefef;
+	padding-left: 50%; 
+	white-space: normal;
+	text-align:left;
+}
+
+.fluid-table td:before { 
+	/* Now like a table header */
+	position: absolute;
+	/* Top/left values mimic padding */
+	top: 6px;
+	left: 6px;
+	width: 45%; 
+	padding-right: 10px; 
+	white-space: nowrap;
+	text-align:left;
+	font-weight: bold;
+}
+
+/*
+Label the data
+ */
+.fluid-table td:before { content: attr(data-title); }
+table input,
+table select {
+	margin:0!important;
+}
+table th,
+table td {
+	padding:3px 2px;
+}
+}

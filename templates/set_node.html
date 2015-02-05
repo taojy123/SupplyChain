@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+<title>set_node</title>
+<style type="text/css">
+        /*	start styles for the ContextMenu	*/
+    .context_menu{
+        background-color:white;
+        border:1px solid gray;
+    }
+    .context_menu_item{
+        padding:3px 6px;
+    }
+    .context_menu_item:hover{
+        background-color:#CCCCCC;
+    }
+    .context_menu_separator{
+        background-color:gray;
+        height:1px;
+        margin:0;
+        padding:0;
+    }
+        /*	end styles for the ContextMenu	*/
+</style>
+<script type="text/javascript" src="/static/js/jquery-1.9.0.js"></script>
+{% if s %}
+    <script type='text/javascript' src='http://maps.google.com/maps/api/js?sensor=false'></script>
+{% endif %}
+<script type="text/javascript" src="/static/js/ContextMenu.js"></script>
+<script>
+//<![CDATA[
+var map = null;
+var marker_array = [];
+var icon_array = [
+    'http://www.google.com/intl/en_ALL/mapfiles/markerA.png',
+    'http://www.google.com/intl/en_ALL/mapfiles/markerB.png',
+    'http://www.google.com/intl/en_ALL/mapfiles/markerC.png',
+    'http://www.google.com/intl/en_ALL/mapfiles/markerD.png'
+];
+var title_array = [
+    '原料地',
+    '工場',
+    '倉庫',
+    '顧客'
+];
+var first_time = 1;
+
+function initialise(){
+    var mapOptions={};
+    mapOptions.zoom=8;
+    mapOptions.center=new google.maps.LatLng(35, 141);
+    mapOptions.mapTypeId=google.maps.MapTypeId.ROADMAP;
+
+    map=new google.maps.Map(document.getElementById('map_container'), mapOptions);
+
+
+    var contextMenuOptions={};
+    contextMenuOptions.classNames={menu:'context_menu', menuSeparator:'context_menu_separator'};
+
+    //	create an array of ContextMenuItem objects
+    //	an 'id' is defined for each of the four directions related items
+    var menuItems=[];
+    menuItems.push({className:'context_menu_item', eventName:'source_click', id:'source', label:'原料地'});
+    menuItems.push({className:'context_menu_item', eventName:'plant_click', id:'plant', label:'工場'});
+    menuItems.push({className:'context_menu_item', eventName:'sink_click', id:'sink', label:'倉庫'});
+    menuItems.push({className:'context_menu_item', eventName:'customer_click', id:'customer', label:'顧客'});
+
+    contextMenuOptions.menuItems=menuItems;
+
+    var contextMenu=new ContextMenu(map, contextMenuOptions);
+
+    google.maps.event.addListener(map, 'click', function(mouseEvent){
+        contextMenu.show(mouseEvent.latLng);
+    });
+
+    //	create markers to show directions origin and destination
+    //	both are not visible by default
+    var markerOptions={};
+    markerOptions.map=null;
+    markerOptions.position=new google.maps.LatLng(0, 0);
+
+    markerOptions.icon='http://www.google.com/intl/en_ALL/mapfiles/markerA.png';
+    markerOptions.title='原料地';
+    var source_marker=new google.maps.Marker(markerOptions);
+
+    markerOptions.icon='http://www.google.com/intl/en_ALL/mapfiles/markerB.png';
+    markerOptions.title='工場';
+    var plant_marker=new google.maps.Marker(markerOptions);
+
+    markerOptions.icon='http://www.google.com/intl/en_ALL/mapfiles/markerC.png';
+    markerOptions.title='倉庫';
+    var sink_marker=new google.maps.Marker(markerOptions);
+
+    markerOptions.icon='http://www.google.com/intl/en_ALL/mapfiles/markerD.png';
+    markerOptions.title='顧客';
+    var customer_marker=new google.maps.Marker(markerOptions);
+
+    //	listen for the ContextMenu 'menu_item_selected' event
+    google.maps.event.addListener(contextMenu, 'menu_item_selected', function(latLng, eventName){
+        //alert(latLng["jb"])
+        //alert(latLng["kb"])
+        switch(eventName){
+            case 'source_click':
+                var source_name = prompt("Please Input Material Area Name")
+                $("#add").click()
+                $("#input_" + datanum.toString() + "_name").val(source_name)
+                $("#input_" + datanum.toString() + "_type").val("1")
+                $("#input_" + datanum.toString() + "_longitude").val(latLng["kb"])
+                $("#input_" + datanum.toString() + "_latitude").val(latLng["jb"])
+                source_marker.setPosition(latLng);
+                if(!source_marker.getMap()){
+                    source_marker.setMap(map);
+                    marker_array.push(source_marker);
+                }
+                break;
+            case 'plant_click':
+                var plant_name = prompt("Please Input Factory Name")
+                $("#add").click()
+                $("#input_" + datanum.toString() + "_name").val(plant_name + "In")
+                $("#input_" + datanum.toString() + "_type").val("2")
+                $("#input_" + datanum.toString() + "_longitude").val(latLng["kb"])
+                $("#input_" + datanum.toString() + "_latitude").val(latLng["jb"])
+                $("#add").click()
+                $("#input_" + datanum.toString() + "_name").val(plant_name + "Out")
+                $("#input_" + datanum.toString() + "_type").val("2")
+                $("#input_" + datanum.toString() + "_longitude").val(latLng["kb"])
+                $("#input_" + datanum.toString() + "_latitude").val(latLng["jb"])
+                plant_marker.setPosition(latLng);
+                if(!plant_marker.getMap()){
+                    plant_marker.setMap(map);
+                    marker_array.push(plant_marker);
+                }
+                break;
+            case 'sink_click':
+                var sink_name = prompt("Please Input WareHouse Name")
+                $("#add").click()
+                $("#input_" + datanum.toString() + "_name").val(sink_name)
+                $("#input_" + datanum.toString() + "_type").val("3")
+                $("#input_" + datanum.toString() + "_longitude").val(latLng["kb"])
+                $("#input_" + datanum.toString() + "_latitude").val(latLng["jb"])
+                sink_marker.setPosition(latLng);
+                if(!sink_marker.getMap()){
+                    sink_marker.setMap(map);
+                    marker_array.push(sink_marker);
+                }
+                break;
+            case 'customer_click':
+                var customer_name = prompt("Please Input Customer Name")
+                $("#add").click()
+                $("#input_" + datanum.toString() + "_name").val(customer_name)
+                $("#input_" + datanum.toString() + "_type").val("4")
+                $("#input_" + datanum.toString() + "_longitude").val(latLng["kb"])
+                $("#input_" + datanum.toString() + "_latitude").val(latLng["jb"])
+                customer_marker.setPosition(latLng);
+                if(!customer_marker.getMap()){
+                    customer_marker.setMap(map);
+                    marker_array.push(customer_marker);
+                }
+                break;
+        }
+    });
+}
+
+function updateMarkers() {
+    for (var i = 0; i < marker_array.length; i++) {
+        marker_array[i].setMap(null);
+    }
+    marker_array = [];
+    var bounds = new google.maps.LatLngBounds();
+    for (i = 1; i <= datanum; i++) {
+        var name = $("#input_" + i.toString() + "_name").val()
+        var type = $("#input_" + i.toString() + "_type").val()
+        var longitude = $("#input_" + i.toString() + "_longitude").val()
+        var latitude = $("#input_" + i.toString() + "_latitude").val()
+        var latlng = new google.maps.LatLng(latitude, longitude);
+        bounds.extend(latlng);
+
+        var markerOptions = {};
+        markerOptions.map = map;
+        markerOptions.position = latlng;
+        markerOptions.title = title_array[type - 1];
+        markerOptions.icon = icon_array[type - 1];
+        var marker = new google.maps.Marker(markerOptions);
+        marker_array.push(marker);
+    }
+    if (first_time) {
+        map.fitBounds(bounds);
+        first_time = 0;
+    }
+}
+
+var datanum = {{ datanum }}
+
+        $(function(){
+            initialise()
+
+            $("#add").click(function(){
+                datanum = datanum + 1
+                var newtr = document.createElement("tr")
+                newtr.id = "tr_" + datanum.toString()
+                $("#tab")[0].appendChild(newtr)
+
+                var newtd = document.createElement("td")
+                newtd.setAttribute("data-title","Name");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+                newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_name"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+                newtd.setAttribute("data-title","Type");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+                newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_type"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+                newtd.setAttribute("data-title","Longitude");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+                newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_longitude"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+                newtd.setAttribute("data-title","Latitude");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+                newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_latitude"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+            })
+
+            $("#del").click(function(){
+                if (datanum == 0){return}
+                $("#tr_" + datanum.toString()).remove()
+                datanum = datanum - 1
+                updateMarkers();
+            })
+
+            $("#update").click(function(){
+                var name = []
+                var type = []
+                var longitude = []
+                var latitude = []
+                for (i=1;i<=datanum;i++){
+                    name[i] = $("#input_" + i.toString() + "_name").val()
+                    type[i] = $("#input_" + i.toString() + "_type").val()
+                    longitude[i] = $("#input_" + i.toString() + "_longitude").val()
+                    latitude[i] = $("#input_" + i.toString() + "_latitude").val()
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/update_node/",
+                    data: {
+                        name:name.toString(),
+                        type:type.toString(),
+                        longitude:longitude.toString(),
+                        latitude:latitude.toString(),
+                        ver:$("#ver").val()
+                    },
+                    error : function (){
+                        alert('Update Failure，Please try again!')
+                    },
+                    success : function (msg){
+                        alert('Update Success')
+                    }
+                })
+            })
+
+            updateMarkers();
+
+        })
+//]]>
+</script>
+
+</head>
+<body>
+<div class="page-header">
+    <h1>Node Set</h1>
+</div>
+
+<div class="row-fluid mb20">
+    <div id="map_container" style="width:100%;height: 600px;"></div>
+</div>
+
+<div class="row-fluid">
+    <p class="alert alert-info">Click on the map, add location information</p>
+</div>
+
+<div class="row-fluid mb20">
+    <table id="tab" class="fluid-table">
+        <thead>
+        <tr>
+            <th>Name</th><th>Type</th><th>Longitude</th><th>Latitude</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for n in node %}
+            <tr id="tr_{{ forloop.counter }}" >
+                <td data-title="Name"><input class="full-width" type="text" id="input_{{ forloop.counter }}_name" value="{{ n.name }}"></td>
+                <td data-title="Type"><input class="full-width" type="text" id="input_{{ forloop.counter }}_type" value="{{ n.type }}"></td>
+                <td data-title="Longitude"><input class="full-width" type="text" id="input_{{ forloop.counter }}_longitude" value="{{ n.longitude }}"></td>
+                <td data-title="Latitude"><input class="full-width" type="text" id="input_{{ forloop.counter }}_latitude" value="{{ n.latitude }}"></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+</script>
+
+<div class="row-fluid">
+    <p>
+        <button id="add" style="display: none" class="btn btn-inverse mb10"><i class="icon-white icon-plus"></i> Add Data</button>
+        <button id="del" class="btn btn-inverse mb10"><i class="icon-white icon-minus"></i> Del Data</button>
+        <button id="update" class="btn btn-success mb10"><i class="icon-white icon-refresh"></i> Update Data</button>
+    </p>
+</div><!-- row-fluid -->
+</body>
+</html>

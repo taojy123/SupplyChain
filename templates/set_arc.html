@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>set_arc</title>
+    <script type="text/javascript" src="/static/js/jquery-1.9.0.js"></script>
+    <script type="text/javascript">
+        //<![CDATA[
+
+        var datanum = {{ datanum }}
+
+        $(function(){
+
+            $("#add").click(function(){
+                datanum = datanum + 1
+                var newtr = document.createElement("tr")
+                newtr.id = "tr_" + datanum.toString()
+                $("#tab")[0].appendChild(newtr)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","From");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newselect = document.createElement("select")
+				newselect.className="full-width"
+                newselect.id = "input_" + datanum.toString() + "_from_where"
+                newtd.appendChild(newselect)
+                {% for r in node_list %}
+                    var newoption = document.createElement("option")
+                    newoption.value = "{{ r.name }}"
+                    newoption.innerHTML = "{{ r.name }}"
+                    newselect.appendChild(newoption)
+                {% endfor %}
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","To");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newselect = document.createElement("select")
+				newselect.className="full-width"
+                newselect.id = "input_" + datanum.toString() + "_to_where"
+                newtd.appendChild(newselect)
+                {% for r in node_list %}
+                    var newoption = document.createElement("option")
+                    newoption.value = "{{ r.name }}"
+                    newoption.innerHTML = "{{ r.name }}"
+                    newselect.appendChild(newoption)
+                {% endfor %}
+
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Afc");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_afc"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Distance");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_distance"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+            })
+
+            $("#del").click(function(){
+                if (datanum == 0){return}
+                $("#tr_" + datanum.toString()).remove()
+                datanum = datanum - 1
+            })
+
+            $("#update").click(function(){
+                var from_where = []
+                var to_where = []
+                var afc = []
+                var distance = []
+                for (i=1;i<=datanum;i++){
+                    from_where[i] = $("#input_" + i.toString() + "_from_where").val()
+                    to_where[i] = $("#input_" + i.toString() + "_to_where").val()
+                    afc[i] = $("#input_" + i.toString() + "_afc").val()
+                    distance[i] = $("#input_" + i.toString() + "_distance").val()
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/update_arc/",
+                    data: {
+                        from_where:from_where.toString(),
+                        to_where:to_where.toString(),
+                        afc:afc.toString(),
+                        distance:distance.toString(),
+                        ver:$("#ver").val()
+
+                    },
+                    error : function (){
+
+                        alert('Update Failure，Please try again!')
+                    },
+                    success : function (msg){
+                        alert('Update Success')
+                    }
+                })
+            })
+
+        })
+        //]]>
+    </script>
+
+</head>
+<body>
+	<div class="page-header">
+		<h1>Arc Set</h1>
+	</div>
+
+	<div class="row-fluid mb20">
+		<table id="tab" class="fluid-table">
+			<thead>
+				<tr>
+					<th>From</th><th>To</th><th>Afc</th><th>Distance</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for n in arc %}
+				<tr id="tr_{{ forloop.counter }}" >
+					<td data-title="From">
+						<select id="input_{{ forloop.counter }}_from_where" class="full-width" >
+							{% for r in node_list %}
+								{% ifequal n.from_where r.name %}
+									<option value="{{ r.name }}" selected="">{{ r.name }}</option>
+								{% else %}
+									<option value="{{ r.name }}" >{{ r.name }}</option>
+								{% endifequal %}
+							{% endfor %}
+						</select>
+					</td>
+					<td data-title="To">
+						<select id="input_{{ forloop.counter }}_to_where" class="full-width">
+							{% for r in node_list %}
+								{% ifequal n.to_where r.name %}
+									<option value="{{ r.name }}" selected="">{{ r.name }}</option>
+								{% else %}
+									<option value="{{ r.name }}" >{{ r.name }}</option>
+								{% endifequal %}
+							{% endfor %}
+						</select>
+					</td>
+					<td data-title="Afc"><input class="full-width" type="text" id="input_{{ forloop.counter }}_afc" value="{{ n.afc }}"></td>
+					<td data-title="Distance"><input class="full-width" type="text" id="input_{{ forloop.counter }}_distance" value="{{ n.distance }}"></td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="row-fluid">
+		<p>
+			<button id="add" class="btn btn-inverse mb10"><i class="icon-white icon-plus"></i> Add Data</button>
+			<button id="del" class="btn btn-inverse mb10"><i class="icon-white icon-minus"></i> Del Data</button>
+			<button id="update" class="btn btn-success mb10"><i class="icon-white icon-refresh"></i> Update Data</button>
+		</p>
+	</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ContextMenu 1.0 Advanced Example</title>
+    <style type="text/css">
+            /*	start styles for the ContextMenu	*/
+        .context_menu{
+            background-color:white;
+            border:1px solid gray;
+        }
+        .context_menu_item{
+            padding:3px 6px;
+        }
+        .context_menu_item:hover{
+            background-color:#CCCCCC;
+        }
+        .context_menu_separator{
+            background-color:gray;
+            height:1px;
+            margin:0;
+            padding:0;
+        }
+            /*	end styles for the ContextMenu	*/
+    </style>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="./js/ContextMenu.js"></script>
+    <script type="text/javascript">
+        //<![CDATA[
+        function initialise(){
+            var mapOptions={};
+            mapOptions.zoom=8;
+            mapOptions.center=new google.maps.LatLng(32, 121);
+            mapOptions.mapTypeId=google.maps.MapTypeId.ROADMAP;
+
+            var map=new google.maps.Map(document.getElementById('map_container'), mapOptions);
+
+
+            var contextMenuOptions={};
+            contextMenuOptions.classNames={menu:'context_menu', menuSeparator:'context_menu_separator'};
+
+            //	create an array of ContextMenuItem objects
+            //	an 'id' is defined for each of the four directions related items
+            var menuItems=[];
+            menuItems.push({className:'context_menu_item', eventName:'source_click', id:'source', label:'原料地'});
+            menuItems.push({className:'context_menu_item', eventName:'plant_click', id:'plant', label:'工厂'});
+            menuItems.push({className:'context_menu_item', eventName:'sink_click', id:'sink', label:'仓库'});
+            menuItems.push({className:'context_menu_item', eventName:'customer_click', id:'customer', label:'顾客'});
+
+            contextMenuOptions.menuItems=menuItems;
+
+            var contextMenu=new ContextMenu(map, contextMenuOptions);
+
+            google.maps.event.addListener(map, 'rightclick', function(mouseEvent){
+                contextMenu.show(mouseEvent.latLng);
+            });
+
+            //	create markers to show directions origin and destination
+            //	both are not visible by default
+            var markerOptions={};
+            markerOptions.map=null;
+            markerOptions.position=new google.maps.LatLng(0, 0);
+
+            markerOptions.icon='http://www.google.com/intl/en_ALL/mapfiles/markerA.png';
+            markerOptions.title='原料地';
+            var source_marker=new google.maps.Marker(markerOptions);
+
+            markerOptions.icon='http://www.google.com/intl/en_ALL/mapfiles/markerB.png';
+            markerOptions.title='工場';
+            var plant_marker=new google.maps.Marker(markerOptions);
+
+            markerOptions.icon='http://www.google.com/intl/en_ALL/mapfiles/markerC.png';
+            markerOptions.title='倉庫';
+            var sink_marker=new google.maps.Marker(markerOptions);
+
+            markerOptions.icon='http://www.google.com/intl/en_ALL/mapfiles/markerD.png';
+            markerOptions.title='顧客';
+            var customer_marker=new google.maps.Marker(markerOptions);
+
+            //	listen for the ContextMenu 'menu_item_selected' event
+            google.maps.event.addListener(contextMenu, 'menu_item_selected', function(latLng, eventName){
+                alert(latLng["jb"])
+                alert(latLng["kb"])
+                switch(eventName){
+                    case 'source_click':
+                        source_marker.setPosition(latLng);
+                        if(!source_marker.getMap()){
+                            source_marker.setMap(map);
+                        }
+                        break;
+                    case 'plant_click':
+                        plant_marker.setPosition(latLng);
+                        if(!plant_marker.getMap()){
+                            plant_marker.setMap(map);
+                        }
+                        break;
+                    case 'sink_click':
+                        sink_marker.setPosition(latLng);
+                        if(!sink_marker.getMap()){
+                            sink_marker.setMap(map);
+                        }
+                        break;
+                    case 'customer_click':
+                        customer_marker.setPosition(latLng);
+                        if(!customer_marker.getMap()){
+                            customer_marker.setMap(map);
+                        }
+                        break;
+                }
+            });
+        }
+        //]]>
+    </script>
+</head>
+<body onload="initialise()">
+<div id="map_container" style="width: 500px ;height: 500px"></div>
+</body>
+</html>

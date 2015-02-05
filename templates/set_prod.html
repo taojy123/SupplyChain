@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>set_prod</title>
+    <script type="text/javascript" src="/static/js/jquery-1.9.0.js"></script>
+    <script type="text/javascript">
+        //<![CDATA[
+
+        var proddatanum = {{ proddatanum }}
+        var unitnum = {{ unitnum }}
+        var revunitnum = {{ revunitnum }}
+
+        $(function(){
+            $("#add_proddata").click(function(){
+                proddatanum = proddatanum + 1
+                var newtr = document.createElement("tr")
+                newtr.id = "tr_proddata_" + proddatanum.toString()
+                $("#tab_proddata")[0].appendChild(newtr)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Name");
+                $("#tr_proddata_" + proddatanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_proddata_" + proddatanum.toString() + "_name"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Weight");
+                $("#tr_proddata_" + proddatanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_proddata_" + proddatanum.toString() + "_weight"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Change");
+                $("#tr_proddata_" + proddatanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_proddata_" + proddatanum.toString() + "_change"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+            })
+
+            $("#add_unit").click(function(){
+                unitnum = unitnum + 1
+                var newtr = document.createElement("tr")
+                newtr.id = "tr_unit_" + unitnum.toString()
+                $("#tab_unit")[0].appendChild(newtr)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Parent_prod");
+                $("#tr_unit_" + unitnum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_unit_" + unitnum.toString() + "_parent_prod"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Child_prod");
+                $("#tr_unit_" + unitnum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_unit_" + unitnum.toString() + "_child_prod"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Quantity");
+                $("#tr_unit_" + unitnum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_unit_" + unitnum.toString() + "_quantity"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+            })
+
+            $("#add_revunit").click(function(){
+                revunitnum = revunitnum + 1
+                var newtr = document.createElement("tr")
+                newtr.id = "tr_revunit_" + revunitnum.toString()
+                $("#tab_revunit")[0].appendChild(newtr)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Parent_prod");
+                $("#tr_revunit_" + revunitnum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_revunit_" + revunitnum.toString() + "_parent_prod"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Child_prod");
+                $("#tr_revunit_" + revunitnum.toString())[0].appendChild(newtd)
+				var newinput = document.createElement("input") 
+				newinput.id = "input_revunit_" + revunitnum.toString() + "_child_prod"
+				newinput.className="full-width"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Quantity");
+                $("#tr_revunit_" + revunitnum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_revunit_" + revunitnum.toString() + "_quantity"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+            })
+
+            $("#del_proddata").click(function(){
+                if (proddatanum == 0){return}
+                $("#tr_proddata_" + proddatanum.toString()).remove()
+                proddatanum = proddatanum - 1
+            })
+
+            $("#del_unit").click(function(){
+                if (unitnum == 0){return}
+                $("#tr_unit_" + unitnum.toString()).remove()
+                unitnum = unitnum - 1
+            })
+
+            $("#del_revunit").click(function(){
+                if (revunitnum == 0){return}
+                $("#tr_revunit_" + revunitnum.toString()).remove()
+                revunitnum = revunitnum - 1
+            })
+
+            $("#update").click(function(){
+                var name = []
+                var weight = []
+                var change = []
+                var parent_prod = []
+                var child_prod = []
+                var quantity = []
+                var rev_parent_prod = []
+                var rev_child_prod = []
+                var rev_quantity = []
+                for (i=1;i<=proddatanum;i++){
+                    name[i] = $("#input_proddata_" + i.toString() + "_name").val()
+                    weight[i] = $("#input_proddata_" + i.toString() + "_weight").val()
+                    change[i] = $("#input_proddata_" + i.toString() + "_change").val()
+                }
+                for (i=1;i<=unitnum;i++){
+                    parent_prod[i] = $("#input_unit_" + i.toString() + "_parent_prod").val()
+                    child_prod[i] = $("#input_unit_" + i.toString() + "_child_prod").val()
+                    quantity[i] = $("#input_unit_" + i.toString() + "_quantity").val()
+                }
+                for (i=1;i<=revunitnum;i++){
+                    rev_parent_prod[i] = $("#input_revunit_" + i.toString() + "_parent_prod").val()
+                    rev_child_prod[i] = $("#input_revunit_" + i.toString() + "_child_prod").val()
+                    rev_quantity[i] = $("#input_revunit_" + i.toString() + "_quantity").val()
+                }
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/update_prod/",
+                    data: {
+                        name:name.toString(),
+                        weight:weight.toString(),
+                        change:change.toString(),
+                        parent_prod:parent_prod.toString(),
+                        child_prod:child_prod.toString(),
+                        quantity:quantity.toString(),
+                        rev_parent_prod:rev_parent_prod.toString(),
+                        rev_child_prod:rev_child_prod.toString(),
+                        rev_quantity:rev_quantity.toString(),
+                        ver:$("#ver").val()
+                    },
+                    error : function (){
+                        alert('Update Failure，Please try again!')
+                    },
+                    success : function (msg){
+                        alert('Update Success')
+                    }
+                })
+            })
+
+        })
+        //]]>
+    </script>
+
+</head>
+<body>
+	<div class="page-header">
+		<h1>Prod Set</h1>
+	</div>
+
+	<div class="row-fluid mb10">
+		<table id="tab_proddata" class="fluid-table">
+			<thead>
+			<tr>
+				<th>Name</th><th>Weight</th><th>変動比率</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for n in proddata %}
+				<tr id="tr_proddata_{{ forloop.counter }}" >
+					<td data-title="Name"><input type="text" class="full-width" id="input_proddata_{{ forloop.counter }}_name" value="{{ n.name }}"></td>
+					<td data-title="Weight"><input type="text" class="full-width" id="input_proddata_{{ forloop.counter }}_weight" value="{{ n.weight }}"></td>
+					<td data-title="変動比率"><input type="text" class="full-width" id="input_proddata_{{ forloop.counter }}_change" value="{{ n.change }}"></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+		</table>
+	</div>
+	<p class="mb30">
+		<button class="btn btn-inverse mb10" id="add_proddata"><i class="icon-white icon-plus"></i> Add ProdData</button>
+		<button class="btn btn-inverse mb10" id="del_proddata"><i class="icon-white icon-minus"></i> Del ProdData</button>
+	</p>
+
+	<div class="row-fluid mb10">
+    <table id="tab_unit" class="fluid-table">
+		<thead>
+        <tr>
+            <th>Parent_prod</th><th>Child_prod</th><th>Quantity</th>
+        </tr>
+	</thead>
+	<tbody>
+        {% for n in unit %}
+            <tr id="tr_unit_{{ forloop.counter }}" >
+                <td data-title="Parent_prod"><input type="text" class="full-width" id="input_unit_{{ forloop.counter }}_parent_prod" value="{{ n.parent_prod }}"></td>
+                <td data-title="Child_prod"><input type="text" class="full-width" id="input_unit_{{ forloop.counter }}_child_prod" value="{{ n.child_prod }}"></td>
+                <td data-title="Quantity"><input type="text" class="full-width" id="input_unit_{{ forloop.counter }}_quantity" value="{{ n.quantity }}"></td>
+            </tr>
+        {% endfor %}
+	</tbody>
+    </table>
+</div>
+<p class="mb30">
+    <button class="btn btn-inverse mb10" id="add_unit"><i class="icon-white icon-plus"></i> Add Unit</button>
+    <button class="btn btn-inverse mb10" id="del_unit"><i class="icon-white icon-minus"></i> Del Unit</button>
+</p>
+<div class="row-fluid mb10">
+    <table id="tab_revunit" class="fluid-table">
+		<thead>
+        <tr>
+            <th>Parent_prod</th><th>Child_prod</th><th>Quantity</th>
+        </tr>
+	</thead>
+	<tbody>
+        {% for n in revunit %}
+            <tr id="tr_revunit_{{ forloop.counter }}" >
+                <td data-title="Parent_prod"><input type="text" class="full-width" id="input_revunit_{{ forloop.counter }}_parent_prod" value="{{ n.parent_prod }}"></td>
+                <td data-title="Child_prod"><input type="text" class="full-width" id="input_revunit_{{ forloop.counter }}_child_prod" value="{{ n.child_prod }}"></td>
+                <td data-title="Quantity"><input type="text" class="full-width" id="input_revunit_{{ forloop.counter }}_quantity" value="{{ n.quantity }}"></td>
+            </tr>
+        {% endfor %}
+	</tbody>
+    </table>
+</div>
+<p class="mb30">
+    <button class="btn btn-inverse mb10" id="add_revunit"><i class="icon-white icon-plus"></i> Add RevUnit</button>
+    <button class="btn btn-inverse mb10" id="del_revunit"><i class="icon-white icon-minus"></i> Del RevUnit</button>
+</p>
+
+<hr>
+    <button class="btn btn-success mb10" id="update"><i class="icon-white icon-refresh"></i> Update Data</button>
+
+
+</body>
+</html>

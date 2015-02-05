@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>set_nodeprod</title>
+    <script type="text/javascript" src="/static/js/jquery-1.9.0.js"></script>
+    <script type="text/javascript">
+        //<![CDATA[
+
+        var datanum = {{ datanum }}
+
+        $(function(){
+
+            $("#add").click(function(){
+                datanum = datanum + 1
+                var newtr = document.createElement("tr")
+                newtr.id = "tr_" + datanum.toString()
+                $("#tab")[0].appendChild(newtr)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Node");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newselect = document.createElement("select")
+				newselect.className="full-width"
+                newselect.id = "input_" + datanum.toString() + "_node"
+                newtd.appendChild(newselect)
+                {% for r in node_list %}
+                    var newoption = document.createElement("option")
+                    newoption.value = "{{ r.name }}"
+                    newoption.innerHTML = "{{ r.name }}"
+                    newselect.appendChild(newoption)
+                {% endfor %}
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Prod");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newselect = document.createElement("select")
+				newselect.className="full-width"
+                newselect.id = "input_" + datanum.toString() + "_prod"
+                newtd.appendChild(newselect)
+                {% for r in prod_list %}
+                    var newoption = document.createElement("option")
+                    newoption.value = "{{ r.name }}"
+                    newoption.innerHTML = "{{ r.name }}"
+                    newselect.appendChild(newoption)
+                {% endfor %}
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Value");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_value"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Demand");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_demand"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+            })
+
+            $("#del").click(function(){
+                if (datanum == 0){return}
+                $("#tr_" + datanum.toString()).remove()
+                datanum = datanum - 1
+            })
+
+            $("#update").click(function(){
+                var node = []
+                var prod = []
+                var value = []
+                var demand = []
+                for (i=1;i<=datanum;i++){
+                    node[i] = $("#input_" + i.toString() + "_node").val()
+                    prod[i] = $("#input_" + i.toString() + "_prod").val()
+                    value[i] = $("#input_" + i.toString() + "_value").val()
+                    demand[i] = $("#input_" + i.toString() + "_demand").val()
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/update_nodeprod/",
+                    data: {
+                        node:node.toString(),
+                        prod:prod.toString(),
+                        value:value.toString(),
+                        demand:demand.toString(),
+                        ver:$("#ver").val()
+                    },
+                    error : function (){
+                        alert('Update Failure，Please try again!')
+                    },
+                    success : function (msg){
+                        alert('Update Success')
+                    }
+                })
+            })
+
+        })
+        //]]>
+    </script>
+
+</head>
+<body>
+	<div class="page-header">
+		<h1>NodeProd Set</h1>
+	</div>
+
+	<div class="row-fluid mb20">
+    <table id="tab" class="fluid-table">
+		<thead>
+			<tr>
+				<th>Node</th><th>Prod</th><th>Value</th><th>Demand</th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for n in nodeprod %}
+            <tr id="tr_{{ forloop.counter }}" >
+                <td data-title="Node">
+                    <select class="full-width" id="input_{{ forloop.counter }}_node"  >
+                        {% for r in node_list %}
+                            {% ifequal n.node r.name %}
+                                <option value="{{ r.name }}" selected="">{{ r.name }}</option>
+                            {% else %}
+                                <option value="{{ r.name }}" >{{ r.name }}</option>
+                            {% endifequal %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td data-title="Prod">
+                    <select class="full-width" id="input_{{ forloop.counter }}_prod"  >
+                        {% for r in prod_list %}
+                            {% ifequal n.prod r.name %}
+                                <option value="{{ r.name }}" selected="">{{ r.name }}</option>
+                            {% else %}
+                                <option value="{{ r.name }}" >{{ r.name }}</option>
+                            {% endifequal %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td data-title="Value"><input type="text" class="full-width" id="input_{{ forloop.counter }}_value" value="{{ n.value }}"></td>
+                <td data-title="Demand"><input type="text" class="full-width" id="input_{{ forloop.counter }}_demand" value="{{ n.demand }}"></td>
+            </tr>
+        {% endfor %}
+	</tbody>
+    </table>
+</div>
+<div class="row-fluid">
+	<button id="add" class="btn btn-inverse mb10"><i class="icon-white icon-plus"></i> Add Data</button>
+	<button id="del" class="btn btn-inverse mb10"><i class="icon-white icon-minus"></i> Del Data</button>
+	<button id="update" class="btn btn-success mb10"><i class="icon-white icon-refresh"></i> Update Data</button>
+</div>
+
+
+
+</body>
+</html>

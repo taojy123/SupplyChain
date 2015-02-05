@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>set_arcresourceprod</title>
+    <script type="text/javascript" src="/static/js/jquery-1.9.0.js"></script>
+    <script type="text/javascript">
+        //<![CDATA[
+
+        var datanum = {{ datanum }}
+
+        $(function(){
+
+            $("#add").click(function(){
+                datanum = datanum + 1
+                var newtr = document.createElement("tr")
+                newtr.id = "tr_" + datanum.toString()
+                $("#tab")[0].appendChild(newtr)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","From");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newselect = document.createElement("select")
+				newselect.className="full-width"
+                newselect.id = "input_" + datanum.toString() + "_from_where"
+                newtd.appendChild(newselect)
+                {% for r in node_list %}
+                    var newoption = document.createElement("option")
+                    newoption.value = "{{ r.name }}"
+                    newoption.innerHTML = "{{ r.name }}"
+                    newselect.appendChild(newoption)
+                {% endfor %}
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","To");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newselect = document.createElement("select")
+				newselect.className="full-width"
+                newselect.id = "input_" + datanum.toString() + "_to_where"
+                newtd.appendChild(newselect)
+                {% for r in node_list %}
+                    var newoption = document.createElement("option")
+                    newoption.value = "{{ r.name }}"
+                    newoption.innerHTML = "{{ r.name }}"
+                    newselect.appendChild(newoption)
+                {% endfor %}
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Resource");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newselect = document.createElement("select")
+				newselect.className="full-width"
+                newselect.id = "input_" + datanum.toString() + "_resource"
+                newtd.appendChild(newselect)
+                {% for r in resource_list %}
+                    var newoption = document.createElement("option")
+                    newoption.value = "{{ r.resource }}"
+                    newoption.innerHTML = "{{ r.resource }}"
+                    newselect.appendChild(newoption)
+                {% endfor %}
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Production");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newselect = document.createElement("select")
+				newselect.className="full-width"
+                newselect.id = "input_" + datanum.toString() + "_production"
+                newtd.appendChild(newselect)
+                {% for r in prod_list %}
+                    var newoption = document.createElement("option")
+                    newoption.value = "{{ r.name }}"
+                    newoption.innerHTML = "{{ r.name }}"
+                    newselect.appendChild(newoption)
+                {% endfor %}
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","Type");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_type"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","VariableCost");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_variablecost"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","CycleTime");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_cycletime"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","LeadTime");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_leadtime"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+
+                var newtd = document.createElement("td")
+				newtd.setAttribute("data-title","UpperBound");
+                $("#tr_" + datanum.toString())[0].appendChild(newtd)
+                var newinput = document.createElement("input")
+				newinput.className="full-width"
+                newinput.id = "input_" + datanum.toString() + "_upperbound"
+                newinput.type = "text"
+                newtd.appendChild(newinput)
+            })
+
+            $("#del").click(function(){
+                if (datanum == 0){return}
+                $("#tr_" + datanum.toString()).remove()
+                datanum = datanum - 1
+            })
+
+            $("#update").click(function(){
+                var from_where = []
+                var to_where = []
+                var resource = []
+                var production = []
+                var type = []
+                var variablecost = []
+                var cycletime = []
+                var leadtime = []
+                var upperbound = []
+                for (i=1;i<=datanum;i++){
+                    from_where[i] = $("#input_" + i.toString() + "_from_where").val()
+                    to_where[i] = $("#input_" + i.toString() + "_to_where").val()
+                    resource[i] = $("#input_" + i.toString() + "_resource").val()
+                    production[i] = $("#input_" + i.toString() + "_production").val()
+                    type[i] = $("#input_" + i.toString() + "_type").val()
+                    variablecost[i] = $("#input_" + i.toString() + "_variablecost").val()
+                    cycletime[i] = $("#input_" + i.toString() + "_cycletime").val()
+                    leadtime[i] = $("#input_" + i.toString() + "_leadtime").val()
+                    upperbound[i] = $("#input_" + i.toString() + "_upperbound").val()
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/update_arcresourceprod/",
+                    data: {
+                        from_where:from_where.toString(),
+                        to_where:to_where.toString(),
+                        resource:resource.toString(),
+                        production:production.toString(),
+                        type:type.toString(),
+                        variablecost:variablecost.toString(),
+                        cycletime:cycletime.toString(),
+                        leadtime:leadtime.toString(),
+                        upperbound:upperbound.toString(),
+                        ver:$("#ver").val()
+                    },
+                    error : function (){
+                        alert('Update Failure，Please try again!')
+                    },
+                    success : function (msg){
+                        alert('Update Success')
+                    }
+                })
+            })
+
+        })
+        //]]>
+    </script>
+
+</head>
+<body>
+	<div class="page-header">
+		<h1>ArcResourceProd Set</h1>
+	</div>
+
+	<div class="row-fluid mb20">
+    <table id="tab" class="fluid-table">
+		<thead>
+			<tr>
+				<th>From</th><th>To</th><th>Resource</th><th>Production</th><th>Type</th><th>VariableCost</th><th>CycleTime</th><th>LeadTime</th><th>UpperBound</th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for n in arcresourceprod %}
+            <tr id="tr_{{ forloop.counter }}" >
+                <td data-title="From">
+                    <select class="full-width" id="input_{{ forloop.counter }}_from_where"  >
+                        {% for r in node_list %}
+                            {% ifequal n.from_where r.name %}
+                                <option value="{{ r.name }}" selected="">{{ r.name }}</option>
+                            {% else %}
+                                <option value="{{ r.name }}" >{{ r.name }}</option>
+                            {% endifequal %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td data-title="To">
+                    <select class="full-width" id="input_{{ forloop.counter }}_to_where"  >
+                        {% for r in node_list %}
+                            {% ifequal n.to_where r.name %}
+                                <option value="{{ r.name }}" selected="">{{ r.name }}</option>
+                            {% else %}
+                                <option value="{{ r.name }}" >{{ r.name }}</option>
+                            {% endifequal %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td data-title="Resource">
+                    <select class="full-width" id="input_{{ forloop.counter }}_resource"  >
+                        {% for r in resource_list %}
+                            {% ifequal n.resource r.resource %}
+                                <option value="{{ r.resource }}" selected="">{{ r.resource }}</option>
+                            {% else %}
+                                <option value="{{ r.resource }}" >{{ r.resource }}</option>
+                            {% endifequal %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td data-title="Production">
+                    <select class="full-width" id="input_{{ forloop.counter }}_production"  >
+                        {% for r in prod_list %}
+                            {% ifequal n.production r.name %}
+                                <option value="{{ r.name }}" selected="">{{ r.name }}</option>
+                            {% else %}
+                                <option value="{{ r.name }}" >{{ r.name }}</option>
+                            {% endifequal %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td data-title="Type"><input type="text" class="full-width" id="input_{{ forloop.counter }}_type" value="{{ n.type }}"></td>
+                <td data-title="VariableCost"><input type="text" class="full-width" id="input_{{ forloop.counter }}_variablecost" value="{{ n.variablecost }}"></td>
+                <td data-title="CycleTime"><input type="text" class="full-width" id="input_{{ forloop.counter }}_cycletime" value="{{ n.cycletime }}"></td>
+                <td data-title="LeadTime"><input type="text" class="full-width" id="input_{{ forloop.counter }}_leadtime" value="{{ n.leadtime }}"></td>
+                <td data-title="UpperBound"><input type="text" class="full-width" id="input_{{ forloop.counter }}_upperbound" value="{{ n.upperbound }}"></td>
+            </tr>
+        {% endfor %}
+		</tbody>
+    </table>
+</div>
+<div class="row-fluid">
+	<button id="add" class="btn btn-inverse mb10"><i class="icon-white icon-plus"></i> Add Data</button>
+	<button id="del" class="btn btn-inverse mb10"><i class="icon-white icon-minus"></i> Del Data</button>
+	<button id="update" class="btn btn-success mb10"><i class="icon-white icon-refresh"></i> Update Data</button>
+</div>
+
+
+
+</body>
+</html>
